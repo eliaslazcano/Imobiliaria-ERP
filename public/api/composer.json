@@ -1,0 +1,25 @@
+{
+  "name": "eliaslazcano/imobiliaria",
+  "description": "Backend da aplicacao imobiliaria",
+  "authors": [
+    {
+      "name": "Elias Lazcano Castro Neto",
+      "email": "elias304162@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "App\\Database\\": "database",
+      "App\\Helper\\": "helper"
+    }
+  },
+  "require": {
+    "ext-curl": "*",
+    "ext-json": "*",
+    "ext-mbstring": "*",
+    "ext-pdo": "*"
+  },
+  "scripts": {
+    "serve": "php -S localhost:3000"
+  }
+}
