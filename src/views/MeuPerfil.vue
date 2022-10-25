@@ -1,8 +1,9 @@
 <template>
   <async-container :loading="loading">
     <v-card width="32rem" class="mx-auto" v-if="!!conta">
-      <v-card-title class="justify-space-between">
+      <v-card-title>
         Sua conta de acesso
+        <v-spacer></v-spacer>
         <v-menu left bottom offset-y class="d-print-none">
           <template v-slot:activator="{ on, attrs }">
             <v-btn icon v-on="on" v-bind="attrs">
@@ -130,8 +131,8 @@ export default {
     ],
     iptEmail: '',
     iptEmailRules: [
+      v => !v || (!/\s/g.test(v)) || 'Não pode usar espaços',
       v => !v || /.+@.+\..+/.test(v) || 'Insira um e-mail válido',
-      v => (!!v && (!/\s/g.test(v))) || 'Não pode usar espaços',
     ],
     loadingPerfil: false,
 

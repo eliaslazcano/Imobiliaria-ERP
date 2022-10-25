@@ -34,6 +34,16 @@ const routes = [
       title: 'Seu perfil'
     },
   },
+  {
+    path: '/locacoes',
+    name: 'locacoes',
+    component: () => import('../views/LocacoesLista'),
+  },
+  {
+    path: '/locacaowizard',
+    name: 'locacaowizard',
+    component: () => import('../views/LocacaoWizard'),
+  },
 ]
 
 const router = new VueRouter({

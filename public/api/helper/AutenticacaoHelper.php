@@ -38,6 +38,11 @@ class AutenticacaoHelper
       else return null;
     }
 
+    if ($somenteUltimo) {
+      $ultimaSessao = $dbApp->queryPrimeiraLinha('SELECT id FROM sessoes WHERE usuario = :usuario ORDER BY id DESC LIMIT 1', [':usuario' => $payload->usuario]);
+      if ($ultimaSessao && $ultimaSessao['id'] != $payload->sessao) HttpHelper::erroJson(410, 'Desconectado devido a sua conta ter um outro acesso mais recente');
+    }
+
     return $payload;
   }
 }

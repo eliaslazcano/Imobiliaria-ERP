@@ -81,6 +81,14 @@
               <v-list-item-title>Início</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
+          <v-list-item to="/locacoes">
+            <v-list-item-icon>
+              <v-icon>mdi-file-sign</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>Locações</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
