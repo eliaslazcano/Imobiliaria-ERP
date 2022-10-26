@@ -1,7 +1,7 @@
 <template>
   <async-container :loading="loading">
     <!-- width="40rem" max-width="100%" -->
-    <v-stepper v-model="step" class="mx-auto">
+    <v-stepper v-model="step" class="mx-auto" width="56rem" max-width="100%">
       <v-stepper-header>
         <v-stepper-step :complete="step > 1" step="1">Imóvel</v-stepper-step>
         <v-divider></v-divider>
@@ -18,49 +18,52 @@
                 <v-card outlined>
                   <v-card-title>Endereço</v-card-title>
                   <v-card-text>
-                    <v-text-field
-                      label="CEP"
-                      v-model="iptImovelCep"
-                      type="tel"
-                      v-mask="'#####-###'"
-                    ></v-text-field>
-                    <v-row dense>
-                      <v-col cols="12" sm="2">
-                        <v-text-field
-                          label="UF"
-                          v-model="iptImovelUf"
-                          v-mask="'AA'"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="10">
-                        <v-text-field
-                          label="Cidade"
-                          v-model="iptImovelCidade"
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
-                    <v-text-field
-                      label="Bairro"
-                      v-model="iptImovelBairro"
-                    ></v-text-field>
-                    <v-text-field
-                      label="Logradouro"
-                      v-model="iptImovelLogradouro"
-                    ></v-text-field>
-                    <v-row dense>
-                      <v-col cols="12" sm="6">
-                        <v-text-field
-                          label="Numero"
-                          v-model="iptImovelNumero"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6">
-                        <v-text-field
-                          label="Complemento"
-                          v-model="iptImovelComplemento"
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
+                    <v-form @submit.prevent :disabled="iptImovelCepLoading">
+                      <v-text-field
+                        label="CEP"
+                        v-model="iptImovelCep"
+                        v-mask="'##.###-###'"
+                        type="tel"
+                        :loading="iptImovelCepLoading"
+                      ></v-text-field>
+                      <v-row dense>
+                        <v-col cols="12" sm="2">
+                          <v-text-field
+                            label="UF"
+                            v-model="iptImovelUf"
+                            v-mask="'AA'"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="10">
+                          <v-text-field
+                            label="Cidade"
+                            v-model="iptImovelCidade"
+                          ></v-text-field>
+                        </v-col>
+                      </v-row>
+                      <v-text-field
+                        label="Bairro"
+                        v-model="iptImovelBairro"
+                      ></v-text-field>
+                      <v-text-field
+                        label="Logradouro"
+                        v-model="iptImovelLogradouro"
+                      ></v-text-field>
+                      <v-row dense>
+                        <v-col cols="12" sm="6">
+                          <v-text-field
+                            label="Numero"
+                            v-model="iptImovelNumero"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6">
+                          <v-text-field
+                            label="Complemento"
+                            v-model="iptImovelComplemento"
+                          ></v-text-field>
+                        </v-col>
+                      </v-row>
+                    </v-form>
                   </v-card-text>
                 </v-card>
               </v-col>
@@ -117,181 +120,196 @@
           <div class="pa-3">
             <p class="title text-center">CADASTRO DE PROPRIETÁRIO</p>
             <v-row>
-              <v-col cols="12" lg="6">
+              <v-col cols="12">
                 <v-card outlined height="100%">
-                  <v-toolbar color="info" dark dense flat>
-                    <v-toolbar-title>Dados pessoais</v-toolbar-title>
-                  </v-toolbar>
+                  <v-card-title>Dados pessoais</v-card-title>
                   <v-card-text>
                     <v-form ref="form-proprietario" @submit.prevent>
-                      <v-text-field
-                        label="CPF"
-                        v-model="iptProprietarioCpf"
-                        v-mask="'###.###.###-##'"
-                        type="tel"
-                        :rules="[v => (!!v && v.length === 14) || 'Informe o CPF completo']"
-                      ></v-text-field>
-                      <v-text-field
-                        label="Nome"
-                        v-model="iptProprietarioNome"
-                        :rules="[v => (!!v && !!v.trim()) || 'Informe o nome completo']"
-                      ></v-text-field>
-                      <v-text-field
-                        label="RG"
-                        v-model="iptProprietarioRg"
-                      ></v-text-field>
-                      <date-field
-                        label="Data de nascimento"
-                        v-model="iptProprietarioDataNascimento"
-                      ></date-field>
-                      <v-autocomplete
-                        label="Estado Civil"
-                        v-model="iptProprietarioEstadoCivil"
-                        :items="iptProprietarioEstadoCivilItems"
-                        auto-select-first
-                        item-value="id"
-                        item-text="titulo"
-                      ></v-autocomplete>
-                      <v-text-field
-                        label="Profissão"
-                        v-model="iptProprietarioProfissao"
-                      ></v-text-field>
+                      <v-row dense>
+                        <v-col cols="12" md="6">
+                          <v-text-field
+                            label="CPF"
+                            v-model="iptProprietarioCpf"
+                            v-mask="'###.###.###-##'"
+                            type="tel"
+                            :rules="[v => (!!v && v.length === 14) || 'Informe o CPF completo']"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" md="6">
+                          <v-text-field
+                            label="Nome"
+                            v-model="iptProprietarioNome"
+                            :rules="[v => (!!v && !!v.trim()) || 'Informe o nome completo']"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" md="6">
+                          <v-text-field
+                            label="RG"
+                            v-model="iptProprietarioRg"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" md="6">
+                          <date-field
+                            label="Data de nascimento"
+                            v-model="iptProprietarioDataNascimento"
+                          ></date-field>
+                        </v-col>
+                        <v-col cols="12" md="6">
+                          <v-autocomplete
+                            label="Estado Civil"
+                            v-model="iptProprietarioEstadoCivil"
+                            :items="iptProprietarioEstadoCivilItems"
+                            auto-select-first
+                            item-value="id"
+                            item-text="titulo"
+                          ></v-autocomplete>
+                        </v-col>
+                        <v-col cols="12" md="6">
+                          <v-text-field
+                            label="Profissão"
+                            v-model="iptProprietarioProfissao"
+                          ></v-text-field>
+                        </v-col>
+                      </v-row>
                     </v-form>
                   </v-card-text>
                 </v-card>
               </v-col>
               <v-col cols="12" lg="6">
                 <v-card outlined height="100%">
-                  <v-toolbar color="info" dark dense flat>
-                    <v-toolbar-title>Dados para contato</v-toolbar-title>
-                  </v-toolbar>
+                  <v-card-title>
+                    E-mails
+                    <v-spacer></v-spacer>
+                    <v-btn icon @click="dialogAddProprietarioEmail = true">
+                      <v-icon>mdi-plus</v-icon>
+                    </v-btn>
+                  </v-card-title>
+                  <v-divider></v-divider>
+                  <v-simple-table v-if="iptProprietarioEmails.length">
+                    <template v-slot:default>
+                      <thead>
+                      <tr>
+                        <th class="text-left">Endereço</th>
+                        <th class="text-center">Comercial</th>
+                        <th class="text-right"></th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr v-for="(item, index) in iptProprietarioEmails" :key="'email_' + index">
+                        <td>{{ item.endereco }}</td>
+                        <td class="text-center">
+                          <v-chip small :color="item.comercial ? 'success' : 'error'">
+                            {{ item.comercial ? 'Sim' : 'Não' }}
+                          </v-chip>
+                        </td>
+                        <td class="text-right">
+                          <v-icon color="error" @click="iptProprietarioEmails.splice(index,1)">mdi-close</v-icon>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </template>
+                  </v-simple-table>
+                  <v-card-text v-else class="text-center">Nenhum e-mail informado..</v-card-text>
+                </v-card>
+              </v-col>
+              <v-col cols="12" lg="6">
+                <v-card outlined height="100%">
+                  <v-card-title>
+                    Telefones
+                    <v-spacer></v-spacer>
+                    <v-btn icon @click="dialogAddProprietarioTelefone = true">
+                      <v-icon>mdi-plus</v-icon>
+                    </v-btn>
+                  </v-card-title>
+                  <v-divider></v-divider>
+                  <v-simple-table v-if="iptProprietarioTelefones.length">
+                    <template v-slot:default>
+                      <thead>
+                      <tr>
+                        <th class="text-left">Número</th>
+                        <th class="text-left">Tipo</th>
+                        <th class="text-center">Comercial</th>
+                        <th class="text-right"></th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr v-for="(item, index) in iptProprietarioTelefones" :key="'tel_' + index">
+                        <td>{{ item.numero }}</td>
+                        <td>
+                          <v-icon v-if="item.tipo === 1">mdi-phone</v-icon>
+                          <v-icon v-else-if="item.tipo === 2">mdi-cellphone</v-icon>
+                        </td>
+                        <td class="text-center">
+                          <v-chip small :color="item.comercial ? 'success' : 'error'">
+                            {{ item.comercial ? 'Sim' : 'Não' }}
+                          </v-chip>
+                        </td>
+                        <td class="text-right">
+                          <v-icon color="error" @click="iptProprietarioTelefones.splice(index,1)">mdi-close</v-icon>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </template>
+                  </v-simple-table>
+                  <v-card-text v-else class="text-center">Nenhum telefone informado..</v-card-text>
+                </v-card>
+              </v-col>
+              <v-col cols="12" lg="6">
+                <v-card outlined height="100%">
+                  <v-card-title>Endereço Residencial</v-card-title>
                   <v-card-text>
-                    <v-card class="mb-5">
-                      <v-toolbar color="grey darken-1" dark flat height="40">
-                        <v-toolbar-title>E-mails</v-toolbar-title>
-                        <v-spacer></v-spacer>
-                        <v-btn icon @click="dialogAddProprietarioEmail = true">
-                          <v-icon>mdi-plus</v-icon>
-                        </v-btn>
-                      </v-toolbar>
-                      <v-simple-table v-if="iptProprietarioEmails.length">
-                        <template v-slot:default>
-                          <thead>
-                          <tr>
-                            <th class="text-left">Endereço</th>
-                            <th class="text-center">Comercial</th>
-                          </tr>
-                          </thead>
-                          <tbody>
-                          <tr v-for="(item, index) in iptProprietarioEmails" :key="'email_' + index">
-                            <td>{{ item.endereco }}</td>
-                            <td class="text-center">
-                              <v-chip small :color="item.comercial ? 'success' : 'error'">
-                                {{ item.comercial ? 'Sim' : 'Não' }}
-                              </v-chip>
-                            </td>
-                          </tr>
-                          </tbody>
-                        </template>
-                      </v-simple-table>
-                      <v-card-text v-else class="text-center">Nenhum e-mail informado..</v-card-text>
-                    </v-card>
-
-                    <v-card>
-                      <v-toolbar color="grey darken-1" dark flat height="40">
-                        <v-toolbar-title>Telefones</v-toolbar-title>
-                        <v-spacer></v-spacer>
-                        <v-btn icon @click="dialogAddProprietarioTelefone = true">
-                          <v-icon>mdi-plus</v-icon>
-                        </v-btn>
-                      </v-toolbar>
-                      <v-simple-table v-if="iptProprietarioTelefones.length">
-                        <template v-slot:default>
-                          <thead>
-                          <tr>
-                            <th class="text-left">Número</th>
-                            <th class="text-left">Tipo</th>
-                            <th class="text-center">Comercial</th>
-                          </tr>
-                          </thead>
-                          <tbody>
-                          <tr v-for="(item, index) in iptProprietarioTelefones" :key="'tel_' + index">
-                            <td>{{ item.numero }}</td>
-                            <td>
-                              <v-icon v-if="item.tipo === 1">mdi-phone</v-icon>
-                              <v-icon v-else-if="item.tipo === 2">mdi-cellphone</v-icon>
-                            </td>
-                            <td class="text-center">
-                              <v-chip small :color="item.comercial ? 'success' : 'error'">
-                                {{ item.comercial ? 'Sim' : 'Não' }}
-                              </v-chip>
-                            </td>
-                          </tr>
-                          </tbody>
-                        </template>
-                      </v-simple-table>
-                      <v-card-text v-else class="text-center">Nenhum telefone informado..</v-card-text>
-                    </v-card>
+                    <v-form @submit.prevent :disabled="iptProprietarioCepLoading">
+                      <v-text-field
+                        label="CEP"
+                        v-model="iptProprietarioCep"
+                        v-mask="'##.###-###'"
+                        type="tel"
+                        :loading="iptProprietarioCepLoading"
+                      ></v-text-field>
+                      <v-row dense>
+                        <v-col cols="12" sm="2">
+                          <v-text-field
+                            label="UF"
+                            v-model="iptProprietarioUf"
+                            v-mask="'AA'"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="10">
+                          <v-text-field
+                            label="Cidade"
+                            v-model="iptProprietarioCidade"
+                          ></v-text-field>
+                        </v-col>
+                      </v-row>
+                      <v-text-field
+                        label="Bairro"
+                        v-model="iptProprietarioBairro"
+                      ></v-text-field>
+                      <v-text-field
+                        label="Logradouro"
+                        v-model="iptProprietarioLogradouro"
+                      ></v-text-field>
+                      <v-row dense>
+                        <v-col cols="12" sm="6">
+                          <v-text-field
+                            label="Numero"
+                            v-model="iptProprietarioNumero"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6">
+                          <v-text-field
+                            label="Complemento"
+                            v-model="iptProprietarioComplemento"
+                          ></v-text-field>
+                        </v-col>
+                      </v-row>
+                    </v-form>
                   </v-card-text>
                 </v-card>
               </v-col>
               <v-col cols="12" lg="6">
                 <v-card outlined height="100%">
-                  <v-toolbar color="info" dark dense flat>
-                    <v-toolbar-title>Endereço Residencial</v-toolbar-title>
-                  </v-toolbar>
-                  <v-card-text>
-                    <v-text-field
-                      label="CEP"
-                      v-model="iptProprietarioCep"
-                      type="tel"
-                      v-mask="'#####-###'"
-                    ></v-text-field>
-                    <v-row dense>
-                      <v-col cols="12" sm="2">
-                        <v-text-field
-                          label="UF"
-                          v-model="iptProprietarioUf"
-                          v-mask="'AA'"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="10">
-                        <v-text-field
-                          label="Cidade"
-                          v-model="iptProprietarioCidade"
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
-                    <v-text-field
-                      label="Bairro"
-                      v-model="iptProprietarioBairro"
-                    ></v-text-field>
-                    <v-text-field
-                      label="Logradouro"
-                      v-model="iptProprietarioLogradouro"
-                    ></v-text-field>
-                    <v-row dense>
-                      <v-col cols="12" sm="6">
-                        <v-text-field
-                          label="Numero"
-                          v-model="iptProprietarioNumero"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6">
-                        <v-text-field
-                          label="Complemento"
-                          v-model="iptProprietarioComplemento"
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
-                  </v-card-text>
-                </v-card>
-              </v-col>
-              <v-col cols="12" lg="6">
-                <v-card outlined height="100%">
-                  <v-toolbar color="info" dark dense flat>
-                    <v-toolbar-title>Dados depósito</v-toolbar-title>
-                  </v-toolbar>
+                  <v-card-title>Dados depósito</v-card-title>
                   <v-card-text>
                     <v-text-field
                       label="Banco"
@@ -333,6 +351,177 @@
         </v-stepper-content>
         <v-stepper-content step="3" class="pa-0">
           <div class="pa-3">
+            <p class="title text-center">CADASTRO DE LOCATÁRIO</p>
+            <v-scroll-x-transition mode="out-in">
+              <v-row :key="1" v-if="!iptLocatarioTipo">
+                <v-col cols="12" md="6">
+                  <v-card>
+                    <v-list two-line color="green lighten-5" class="py-0">
+                      <v-list-item @click="iptLocatarioTipo = 1">
+                        <v-list-item-avatar class="justify-center">
+                          <v-avatar color="success">
+                            <v-icon color="white">mdi-account</v-icon>
+                          </v-avatar>
+                        </v-list-item-avatar>
+                        <v-list-item-content>
+                          <v-list-item-title>Pessoa Física</v-list-item-title>
+                          <v-list-item-subtitle>O locatário é pessoa física</v-list-item-subtitle>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </v-list>
+                  </v-card>
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-card>
+                    <v-list two-line color="blue lighten-5" class="py-0">
+                      <v-list-item @click="iptLocatarioTipo = 2">
+                        <v-list-item-avatar class="justify-center">
+                          <v-avatar color="primary">
+                            <v-icon color="white">mdi-office-building</v-icon>
+                          </v-avatar>
+                        </v-list-item-avatar>
+                        <v-list-item-content>
+                          <v-list-item-title>Pessoa Jurídica</v-list-item-title>
+                          <v-list-item-subtitle>O locatário é pessoa jurídica</v-list-item-subtitle>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </v-list>
+                  </v-card>
+                </v-col>
+              </v-row>
+              <v-row :key="2" v-else-if="iptLocatarioTipo === 1">
+                <v-col cols="12">
+                  <v-card outlined>
+                    <v-card-title>Dados pessoais</v-card-title>
+                    <v-card-text>
+                      <v-row dense>
+                        <v-col cols="12" md="6">
+                          <v-text-field
+                            label="CPF"
+                            v-model="iptLocatarioCpf"
+                            v-mask="'###.###.###-##'"
+                            type="tel"
+                            :rules="[v => (!!v && v.length === 14) || 'Informe o CPF completo']"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" md="6">
+                          <v-text-field
+                            label="Nome"
+                            v-model="iptLocatarioNome"
+                            :rules="[v => (!!v && !!v.trim()) || 'Informe o nome completo']"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" md="6">
+                          <v-text-field
+                            label="RG"
+                            v-model="iptLocatarioRg"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" md="6">
+                          <date-field
+                            label="Data de nascimento"
+                            v-model="iptLocatarioDataNascimento"
+                          ></date-field>
+                        </v-col>
+                        <v-col cols="12" md="6">
+                          <v-autocomplete
+                            label="Estado Civil"
+                            v-model="iptLocatarioEstadoCivil"
+                            :items="iptProprietarioEstadoCivilItems"
+                            auto-select-first
+                            item-value="id"
+                            item-text="titulo"
+                          ></v-autocomplete>
+                        </v-col>
+                        <v-col cols="12" md="6">
+                          <v-text-field
+                            label="Profissão"
+                            v-model="iptLocatarioProfissao"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12">
+                          <v-text-field
+                            label="Renda mensal"
+                            v-model="iptLocatarioRenda"
+                          ></v-text-field>
+                        </v-col>
+                      </v-row>
+                    </v-card-text>
+                  </v-card>
+                </v-col>
+                <v-col cols="12">
+                  <v-card outlined>
+                    <v-card-title>Trabalho atual</v-card-title>
+                    <v-card-text>
+                      <v-row dense>
+                        <v-col cols="12" md="6">
+                          <v-text-field
+                            label="Nome da empresa"
+                            v-model="iptProfissaoEmpresa"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" md="6">
+                          <date-field
+                            label="Data de admissão"
+                            v-model="iptProfissaoAdmissao"
+                          ></date-field>
+                        </v-col>
+                      </v-row>
+                      <v-divider class="mt-3 mb-5"></v-divider>
+                      <p class="subtitle-2 mb-0">Endereço da empresa:</p>
+                      <v-form @submit.prevent :disabled="iptProfissaoCepLoading">
+                        <v-text-field
+                          label="CEP"
+                          v-model="iptProfissaoCep"
+                          v-mask="'##.###-###'"
+                          type="tel"
+                          :loading="iptProfissaoCepLoading"
+                        ></v-text-field>
+                        <v-row dense>
+                          <v-col cols="12" sm="2">
+                            <v-text-field
+                              label="UF"
+                              v-model="iptProfissaoUf"
+                              v-mask="'AA'"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="10">
+                            <v-text-field
+                              label="Cidade"
+                              v-model="iptProfissaoCidade"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" md="6">
+                            <v-text-field
+                              label="Bairro"
+                              v-model="iptProfissaoBairro"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" md="6">
+                            <v-text-field
+                              label="Logradouro"
+                              v-model="iptProfissaoLogradouro"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6">
+                            <v-text-field
+                              label="Numero"
+                              v-model="iptProfissaoNumero"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6">
+                            <v-text-field
+                              label="Complemento"
+                              v-model="iptProfissaoComplemento"
+                            ></v-text-field>
+                          </v-col>
+                        </v-row>
+                      </v-form>
+                    </v-card-text>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </v-scroll-x-transition>
             <v-card-actions class="pa-0 mt-5">
               <v-btn small color="primary" @click="step = step - 1">
                 <v-icon small class="mr-1">mdi-arrow-left</v-icon> Retroceder
@@ -356,6 +545,7 @@
               label="Endereço de e-mail"
               v-model="iptTmpEmail"
               :rules="iptTmpEmailRules"
+              :autofocus="$vuetify.breakpoint.mdAndUp"
               outlined
               dense
             ></v-text-field>
@@ -385,6 +575,7 @@
               v-mask="['(##) ####-####','(##) #####-####']"
               type="tel"
               :rules="iptTmpTelefoneRules"
+              :autofocus="$vuetify.breakpoint.mdAndUp"
               outlined
               dense
             ></v-text-field>
@@ -392,6 +583,7 @@
               label="Tipo de telefone"
               v-model="iptTmpTelefoneTipo"
               :items="[{value: 1, text: 'Fixo'},{value: 2, text: 'Celular'}]"
+              :rules="[v => !!v || 'Selecione o tipo de telefone']"
               hide-details
               outlined
               dense
@@ -417,12 +609,14 @@
 import DateField from '@/components/DateField';
 import AsyncContainer from '@/components/AsyncContainer';
 import AppWebClient from '@/http/AppWebClient';
+import StringHelper from '@/helper/StringHelper';
+import CepWebClient from '@/http/CepWebClient';
 export default {
   name: 'LocacaoWizard',
   components: {AsyncContainer, DateField},
   data: () => ({
     loading: true,
-    step: 1,
+    step: 3,
     iptTmpEmail: '',
     iptTmpEmailRules: [
       v => !!v || 'Insira o e-mail',
@@ -455,6 +649,7 @@ export default {
 
     iptProprietarioEnderecoId: null, //para endereco ja conhecido
     iptProprietarioCep: '',
+    iptProprietarioCepLoading: false,
     iptProprietarioUf: '',
     iptProprietarioCidade: '',
     iptProprietarioBairro: '',
@@ -468,8 +663,10 @@ export default {
     iptDepositoTipo: 1,
     iptPagarIptu: false,
 
+    //Imovel
     iptImovelEnderecoId: null, //para endereco ja conhecido
     iptImovelCep: '',
+    iptImovelCepLoading: false,
     iptImovelUf: '',
     iptImovelCidade: '',
     iptImovelBairro: '',
@@ -482,6 +679,28 @@ export default {
     iptImovelIptu: '',
     iptImovelSeguro: '',
     iptImovelAluguel: '',
+
+    //Locatario
+    iptLocatarioTipo: null, //1:PF, 2:PJ
+    iptLocatarioCpf: '',
+    iptLocatarioNome: '',
+    iptLocatarioRg: '',
+    iptLocatarioDataNascimento: '',
+    iptLocatarioEstadoCivil: null,
+    iptLocatarioProfissao: '',
+    iptLocatarioRenda: '',
+
+    iptProfissaoEmpresa: '',
+    iptProfissaoAdmissao: '',
+    iptProfissaoCep: '',
+    iptProfissaoCepLoading: false,
+    iptProfissaoUf: '',
+    iptProfissaoCidade: '',
+    iptProfissaoBairro: '',
+    iptProfissaoLogradouro: '',
+    iptProfissaoNumero: '',
+    iptProfissaoComplemento: '',
+
   }),
   async created() {
     try {
@@ -503,7 +722,7 @@ export default {
     addTelefoneProprietario() {
       if (!this.$refs['form-telefone-proprietario'].validate()) return;
       this.iptProprietarioTelefones.push({id: null, numero: this.iptTmpTelefone, tipo: this.iptTmpTelefoneTipo, comercial: this.iptTmpTelefoneComercial});
-      this.$refs['form-telefone-proprietario'].reset();
+      this.iptTmpTelefone = '';
       this.dialogAddProprietarioTelefone = false;
     },
     concluirStepProprietario() {
@@ -523,6 +742,41 @@ export default {
     },
     dialogAddProprietarioTelefone(v) {
       if (!v) this.$refs['form-telefone-proprietario'].resetValidation();
+    },
+    iptImovelCep(v) {
+      if (!v || this.iptImovelCepLoading) return;
+      const cep = StringHelper.extractNumbers(v);
+      if (cep.length !== 8) return;
+      this.iptImovelCepLoading = true;
+      CepWebClient.smart(cep)
+        .then(endereco => {
+          if (endereco) {
+            this.iptImovelUf = endereco.estado ? endereco.estado.toUpperCase() : '';
+            this.iptImovelCidade = endereco.cidade ? endereco.cidade.toUpperCase() : '';
+            this.iptImovelBairro = endereco.bairro ? endereco.bairro.toUpperCase() : '';
+            this.iptImovelLogradouro = endereco.logradouro ? endereco.logradouro.toUpperCase() : '';
+          }
+        }).finally(() => this.iptImovelCepLoading = false);
+    },
+    iptProprietarioCep(v) {
+      if (!v || this.iptProprietarioCepLoading) return;
+      const cep = StringHelper.extractNumbers(v);
+      if (cep.length !== 8) return;
+      this.iptProprietarioCepLoading = true;
+      CepWebClient.smart(cep)
+        .then(endereco => {
+          if (endereco) {
+            this.iptProprietarioUf = endereco.estado ? endereco.estado.toUpperCase() : '';
+            this.iptProprietarioCidade = endereco.cidade ? endereco.cidade.toUpperCase() : '';
+            this.iptProprietarioBairro = endereco.bairro ? endereco.bairro.toUpperCase() : '';
+            this.iptProprietarioLogradouro = endereco.logradouro ? endereco.logradouro.toUpperCase() : '';
+          }
+        }).finally(() => this.iptProprietarioCepLoading = false);
+    },
+    iptTmpTelefone(v) {
+      if (!v) return;
+      const nr = StringHelper.extractNumbers(v);
+      if (nr.length >= 11) this.iptTmpTelefoneTipo = 2;
     },
   }
 }
