@@ -3,16 +3,16 @@
     <!-- width="40rem" max-width="100%" -->
     <v-stepper v-model="step" class="mx-auto" width="56rem" max-width="100%">
       <v-stepper-header>
-        <v-stepper-step :complete="step > 1" step="1">Imóvel</v-stepper-step>
+        <v-stepper-step step="1" :complete="step > 1" :color="step > 1 ? 'success' : 'primary'">Imóvel</v-stepper-step>
         <v-divider></v-divider>
-        <v-stepper-step :complete="step > 2" step="2">Proprietário</v-stepper-step>
+        <v-stepper-step step="2" :complete="step > 2" :color="step > 2 ? 'success' : 'primary'">Proprietário</v-stepper-step>
         <v-divider></v-divider>
-        <v-stepper-step :complete="step > 3" step="3">Locatário</v-stepper-step>
+        <v-stepper-step step="3" :complete="step > 3" :color="step > 3 ? 'success' : 'primary'">Locatário</v-stepper-step>
       </v-stepper-header>
       <v-stepper-items>
         <v-stepper-content step="1" class="pa-0">
           <div class="pa-3">
-            <p class="title text-center">CADASTRO DO IMÓVEL</p>
+            <p class="title text-center">DADOS DO IMÓVEL</p>
             <v-row>
               <v-col cols="12" lg="6">
                 <v-card outlined>
@@ -118,7 +118,7 @@
         </v-stepper-content>
         <v-stepper-content step="2" class="pa-0">
           <div class="pa-3">
-            <p class="title text-center">CADASTRO DE PROPRIETÁRIO</p>
+            <p class="title text-center">DADOS DE PROPRIETÁRIO</p>
             <v-row>
               <v-col cols="12">
                 <v-card outlined height="100%">
@@ -351,12 +351,14 @@
         </v-stepper-content>
         <v-stepper-content step="3" class="pa-0">
           <div class="pa-3">
-            <p class="title text-center">CADASTRO DE LOCATÁRIO</p>
+            <p class="title text-center mb-0">DADOS DO LOCATÁRIO</p>
+            <p class="subtitle-1 text-center mb-0" v-if="iptLocatarioTipo === 1">PESSOA FÍSICA</p>
+            <p class="subtitle-1 text-center mb-0" v-if="iptLocatarioTipo === 2">PESSOA JURÍDICA</p>
             <v-scroll-x-transition mode="out-in">
-              <v-row :key="1" v-if="!iptLocatarioTipo">
+              <v-row :key="1" v-if="!iptLocatarioTipo" class="mt-1" dense>
                 <v-col cols="12" md="6">
-                  <v-card>
-                    <v-list two-line color="green lighten-5" class="py-0">
+                  <v-card outlined>
+                    <v-list two-line class="py-0">
                       <v-list-item @click="iptLocatarioTipo = 1">
                         <v-list-item-avatar class="justify-center">
                           <v-avatar color="success">
@@ -372,8 +374,8 @@
                   </v-card>
                 </v-col>
                 <v-col cols="12" md="6">
-                  <v-card>
-                    <v-list two-line color="blue lighten-5" class="py-0">
+                  <v-card outlined>
+                    <v-list two-line class="py-0">
                       <v-list-item @click="iptLocatarioTipo = 2">
                         <v-list-item-avatar class="justify-center">
                           <v-avatar color="primary">
@@ -440,10 +442,11 @@
                           ></v-text-field>
                         </v-col>
                         <v-col cols="12">
-                          <v-text-field
+                          <text-field-monetary
                             label="Renda mensal"
+                            prefix="R$"
                             v-model="iptLocatarioRenda"
-                          ></v-text-field>
+                          ></text-field-monetary>
                         </v-col>
                       </v-row>
                     </v-card-text>
@@ -467,7 +470,6 @@
                           ></date-field>
                         </v-col>
                       </v-row>
-                      <v-divider class="mt-3 mb-5"></v-divider>
                       <p class="subtitle-2 mb-0">Endereço da empresa:</p>
                       <v-form @submit.prevent :disabled="iptProfissaoCepLoading">
                         <v-text-field
@@ -521,8 +523,217 @@
                   </v-card>
                 </v-col>
               </v-row>
+              <v-row :key="3" v-else-if="iptLocatarioTipo === 2">
+                <v-col cols="12">
+                  <v-card outlined>
+                    <v-card-title>Pretendente Locatário</v-card-title>
+                    <v-card-text>
+                      <v-row dense>
+                        <v-col cols="12" md="6">
+                          <v-text-field
+                            label="CNPJ"
+                            v-model="iptLocatarioCpf"
+                            v-mask="'##.###.###/####-##'"
+                            type="tel"
+                            :rules="[v => (!!v && v.length === 18) || 'Informe o CNPJ completo']"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" md="6">
+                          <v-text-field
+                            label="Razão Social"
+                            v-model="iptLocatarioRazaoSocial"
+                            :rules="[v => (!!v && !!v.trim()) || 'Informe a razão social']"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" md="6">
+                          <v-text-field
+                            label="Nome Fantasia"
+                            v-model="iptLocatarioNome"
+                            :rules="[v => (!!v && !!v.trim()) || 'Informe o nome fantasia']"
+                          ></v-text-field>
+                        </v-col>
+                      </v-row>
+                    </v-card-text>
+                  </v-card>
+                </v-col>
+                <v-col cols="12">
+                  <transition-group name="scroll-x-transition" tag="div">
+                    <v-card v-for="(i, index) in iptLocatarioSocios" :key="index" outlined :id="'socio_' + index" class="mb-6">
+                      <v-card-title>
+                        <span>Sócio Pessoa Física {{ index > 0 ? index + 1 : '' }}</span>
+                        <v-spacer></v-spacer>
+                        <v-btn v-if="iptLocatarioSocios.length > 1" color="error" small depressed @click="iptLocatarioSocios.splice(index, 1)">Remover</v-btn>
+                      </v-card-title>
+                      <v-card-text>
+                        <v-row dense>
+                          <v-col cols="12" md="6">
+                            <v-text-field
+                              label="Nome completo"
+                              v-model="iptLocatarioSocios[index].nome"
+                              :rules="[v => (!!v && !!v.trim()) || 'Informe o nome completo']"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" md="6">
+                            <date-field
+                              label="Data de nascimento"
+                              v-model="iptLocatarioSocios[index].datanascimento"
+                            ></date-field>
+                          </v-col>
+                          <v-col cols="12" md="6">
+                            <v-text-field
+                              label="Nome do pai"
+                              v-model="iptLocatarioSocios[index].pai"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" md="6">
+                            <v-text-field
+                              label="Nome da mãe"
+                              v-model="iptLocatarioSocios[index].mae"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" md="6">
+                            <v-text-field
+                              label="Naturalidade (Estado)"
+                              v-model="iptLocatarioSocios[index].naturalidadeuf"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" md="6">
+                            <v-text-field
+                              label="Nacionalidade"
+                              v-model="iptLocatarioSocios[index].nacionalidade"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" md="6">
+                            <v-text-field
+                              label="CPF"
+                              v-model="iptLocatarioSocios[index].cpf"
+                              v-mask="'###.###.###-##'"
+                              type="tel"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" md="6">
+                            <v-text-field
+                              label="RG"
+                              v-model="iptLocatarioSocios[index].rg"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" md="6">
+                            <v-text-field
+                              label="Tempo de sociedade"
+                              v-model="iptLocatarioSocios[index].tempo"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" md="6">
+                            <text-field-monetary
+                              label="Participação na empresa"
+                              prefix="%"
+                              v-model="iptLocatarioSocios[index].participacao"
+                            ></text-field-monetary>
+                          </v-col>
+                          <v-col cols="12" md="6">
+                            <v-text-field
+                              label="Cargo/Função"
+                              v-model="iptLocatarioSocios[index].cargo"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" md="6">
+                            <text-field-monetary
+                              label="Remuneração"
+                              prefix="R$"
+                              v-model="iptLocatarioSocios[index].remuneracao"
+                            ></text-field-monetary>
+                          </v-col>
+                          <v-col cols="12" md="6">
+                            <v-autocomplete
+                              label="Estado Civil"
+                              v-model="iptLocatarioSocios[index].estadocivil"
+                              :items="iptProprietarioEstadoCivilItems"
+                              auto-select-first
+                              item-value="id"
+                              item-text="titulo"
+                            ></v-autocomplete>
+                          </v-col>
+                          <v-col cols="12" md="6">
+                            <v-text-field
+                              label="Escolaridade"
+                              v-model="iptLocatarioSocios[index].escolaridade"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12">
+                            <v-text-field
+                              label="Profissão"
+                              v-model="iptLocatarioSocios[index].profissao"
+                            ></v-text-field>
+                          </v-col>
+                        </v-row>
+                        <p class="subtitle-2 mb-0">Domicílio completo:</p>
+                        <v-row>
+                          <v-col cols="12">
+                            <v-text-field
+                              label="CEP"
+                              v-model="iptLocatarioSocios[index].cep"
+                              v-mask="'##.###-###'"
+                              type="tel"
+                              @input="onSocioCepChange(index)"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="2">
+                            <v-text-field
+                              label="UF"
+                              v-model="iptLocatarioSocios[index].uf"
+                              v-mask="'AA'"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="10">
+                            <v-text-field
+                              label="Cidade"
+                              v-model="iptLocatarioSocios[index].cidade"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" md="6">
+                            <v-text-field
+                              label="Bairro"
+                              v-model="iptLocatarioSocios[index].bairro"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" md="6">
+                            <v-text-field
+                              label="Logradouro"
+                              v-model="iptLocatarioSocios[index].logradouro"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6">
+                            <v-text-field
+                              label="Numero"
+                              v-model="iptLocatarioSocios[index].numero"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6">
+                            <v-text-field
+                              label="Complemento"
+                              v-model="iptLocatarioSocios[index].complemento"
+                            ></v-text-field>
+                          </v-col>
+                        </v-row>
+                      </v-card-text>
+                    </v-card>
+                  </transition-group>
+                </v-col>
+                <v-col cols="12" class="pt-0">
+                  <div class="text-center">
+                    <v-btn
+                      color="success"
+                      small
+                      depressed
+                      @click="iptLocatarioSocios.push({}); $nextTick(() => $vuetify.goTo('#' + 'socio_' + (iptLocatarioSocios.length - 1)))">
+                      <v-icon class="mr-1" small>mdi-plus</v-icon> Adicionar mais um sócio
+                    </v-btn>
+                  </div>
+                </v-col>
+              </v-row>
             </v-scroll-x-transition>
-            <v-card-actions class="pa-0 mt-5">
+            <v-divider class="mt-3"></v-divider>
+            <v-card-actions class="pa-0 mt-3">
               <v-btn small color="primary" @click="step = step - 1">
                 <v-icon small class="mr-1">mdi-arrow-left</v-icon> Retroceder
               </v-btn>
@@ -611,9 +822,10 @@ import AsyncContainer from '@/components/AsyncContainer';
 import AppWebClient from '@/http/AppWebClient';
 import StringHelper from '@/helper/StringHelper';
 import CepWebClient from '@/http/CepWebClient';
+import TextFieldMonetary from '@/components/TextFieldMonetary.vue';
 export default {
   name: 'LocacaoWizard',
-  components: {AsyncContainer, DateField},
+  components: {TextFieldMonetary, AsyncContainer, DateField},
   data: () => ({
     loading: true,
     step: 3,
@@ -682,13 +894,17 @@ export default {
 
     //Locatario
     iptLocatarioTipo: null, //1:PF, 2:PJ
-    iptLocatarioCpf: '',
+    iptLocatarioCpf: '', //CNPJ ou CPF
+    iptLocatarioRazaoSocial: '', //apenas PJ
     iptLocatarioNome: '',
     iptLocatarioRg: '',
     iptLocatarioDataNascimento: '',
     iptLocatarioEstadoCivil: null,
     iptLocatarioProfissao: '',
-    iptLocatarioRenda: '',
+    iptLocatarioRenda: 0,
+    iptLocatarioSocios: [
+      {nome: '', datanascimento: '', pai: '', mae: '', naturalidadeuf: '', uf: '', cidade: '', bairro: '', logradouro: ''}
+    ],
 
     iptProfissaoEmpresa: '',
     iptProfissaoAdmissao: '',
@@ -735,6 +951,20 @@ export default {
     concluirStepImovel() {
       this.step = 2;
     },
+    async onSocioCepChange(socioIndice) {
+      const i = this.iptLocatarioSocios[socioIndice];
+      if (!i.cep) return;
+      const cep = StringHelper.extractNumbers(i.cep);
+      if (cep.length !== 8) return;
+      CepWebClient.smart(cep).then(endereco => {
+        if (endereco) {
+          this.iptLocatarioSocios[socioIndice].uf = endereco.estado ? endereco.estado.toUpperCase() : '';
+          this.iptLocatarioSocios[socioIndice].cidade = endereco.cidade ? endereco.cidade.toUpperCase() : '';
+          this.iptLocatarioSocios[socioIndice].bairro = endereco.bairro ? endereco.bairro.toUpperCase() : '';
+          this.iptLocatarioSocios[socioIndice].logradouro = endereco.logradouro ? endereco.logradouro.toUpperCase() : '';
+        }
+      });
+    },
   },
   watch: {
     dialogAddProprietarioEmail(v) {
@@ -748,35 +978,50 @@ export default {
       const cep = StringHelper.extractNumbers(v);
       if (cep.length !== 8) return;
       this.iptImovelCepLoading = true;
-      CepWebClient.smart(cep)
-        .then(endereco => {
-          if (endereco) {
-            this.iptImovelUf = endereco.estado ? endereco.estado.toUpperCase() : '';
-            this.iptImovelCidade = endereco.cidade ? endereco.cidade.toUpperCase() : '';
-            this.iptImovelBairro = endereco.bairro ? endereco.bairro.toUpperCase() : '';
-            this.iptImovelLogradouro = endereco.logradouro ? endereco.logradouro.toUpperCase() : '';
-          }
-        }).finally(() => this.iptImovelCepLoading = false);
+      CepWebClient.smart(cep).then(endereco => {
+        if (endereco) {
+          this.iptImovelUf = endereco.estado ? endereco.estado.toUpperCase() : '';
+          this.iptImovelCidade = endereco.cidade ? endereco.cidade.toUpperCase() : '';
+          this.iptImovelBairro = endereco.bairro ? endereco.bairro.toUpperCase() : '';
+          this.iptImovelLogradouro = endereco.logradouro ? endereco.logradouro.toUpperCase() : '';
+        }
+      }).finally(() => this.iptImovelCepLoading = false);
     },
     iptProprietarioCep(v) {
       if (!v || this.iptProprietarioCepLoading) return;
       const cep = StringHelper.extractNumbers(v);
       if (cep.length !== 8) return;
       this.iptProprietarioCepLoading = true;
-      CepWebClient.smart(cep)
-        .then(endereco => {
-          if (endereco) {
-            this.iptProprietarioUf = endereco.estado ? endereco.estado.toUpperCase() : '';
-            this.iptProprietarioCidade = endereco.cidade ? endereco.cidade.toUpperCase() : '';
-            this.iptProprietarioBairro = endereco.bairro ? endereco.bairro.toUpperCase() : '';
-            this.iptProprietarioLogradouro = endereco.logradouro ? endereco.logradouro.toUpperCase() : '';
-          }
-        }).finally(() => this.iptProprietarioCepLoading = false);
+      CepWebClient.smart(cep).then(endereco => {
+        if (endereco) {
+          this.iptProprietarioUf = endereco.estado ? endereco.estado.toUpperCase() : '';
+          this.iptProprietarioCidade = endereco.cidade ? endereco.cidade.toUpperCase() : '';
+          this.iptProprietarioBairro = endereco.bairro ? endereco.bairro.toUpperCase() : '';
+          this.iptProprietarioLogradouro = endereco.logradouro ? endereco.logradouro.toUpperCase() : '';
+        }
+      }).finally(() => this.iptProprietarioCepLoading = false);
+    },
+    iptProfissaoCep(v) {
+      if (!v || this.iptProfissaoCepLoading) return;
+      const cep = StringHelper.extractNumbers(v);
+      if (cep.length !== 8) return;
+      this.iptProfissaoCepLoading = true;
+      CepWebClient.smart(cep).then(endereco => {
+        if (endereco) {
+          this.iptProfissaoUf = endereco.estado ? endereco.estado.toUpperCase() : '';
+          this.iptProfissaoCidade = endereco.cidade ? endereco.cidade.toUpperCase() : '';
+          this.iptProfissaoBairro = endereco.bairro ? endereco.bairro.toUpperCase() : '';
+          this.iptProfissaoLogradouro = endereco.logradouro ? endereco.logradouro.toUpperCase() : '';
+        }
+      }).finally(() => this.iptProfissaoCepLoading = false);
     },
     iptTmpTelefone(v) {
       if (!v) return;
       const nr = StringHelper.extractNumbers(v);
       if (nr.length >= 11) this.iptTmpTelefoneTipo = 2;
+    },
+    step() {
+      this.iptLocatarioTipo = null;
     },
   }
 }

@@ -92,7 +92,7 @@
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
-    <v-main :class="{'main-fundo': !$vuetify.theme.dark}">
+    <v-main :style="{ backgroundColor: !$vuetify.theme.dark ? '#f5f6f8' : null }">
       <transition name="fade-transition" @after-leave="$vuetify.goTo(1)" mode="out-in">
         <router-view/>
       </transition>
@@ -102,11 +102,11 @@
       app
       dark
       :color="$vuetify.theme.dark ? undefined : 'primary'"
-      class="justify-space-between caption"
+      class="justify-space-between caption py-1"
     >
       <span v-if="$store.getters.sessionPayload">SSID {{ $store.getters.sessionPayload.sessao }}</span>
       <span v-else>&copy; Vega Softwares</span>
-      <span>v{{ version }}</span>
+      <span>versão {{ version }}</span>
     </v-footer>
     <v-snackbar
       app
@@ -176,8 +176,5 @@ thead.v-data-table-header th {
 }
 .v-dialog:not(.v-dialog--fullscreen) {
   margin: .8rem !important;
-}
-.main-fundo {
-  background-color: #f5f5f5;
 }
 </style>

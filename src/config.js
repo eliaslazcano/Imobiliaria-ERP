@@ -1,7 +1,7 @@
 export const config = {
   http: {
-    requestBaseUrl: 'http://localhost:3000/', //Ultimo caractere deve ser a '/'.
+    requestBaseUrl: 'https://efcastro.eliaslazcano.dev.br/api/', //Ultimo caractere deve ser a '/'.
     requestTimeout: 90000,
   },
-  appNome: 'Imobiliaria App',
+  appNome: 'EF Castro',
 };

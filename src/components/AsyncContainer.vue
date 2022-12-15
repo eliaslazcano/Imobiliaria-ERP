@@ -16,8 +16,9 @@
       v-if="loading"
       :key="1"
       class="text-center"
-      style="position: fixed; left: 0; right: 0; top: calc(50% - 16px)">
-      <v-progress-circular indeterminate :color="color" size="32"></v-progress-circular>
+      style="position: absolute; left: 0; right: 0; top: calc(50% - 16px)"
+    >
+      <v-progress-circular indeterminate :color="color"></v-progress-circular>
       <p class="mb-0 mt-2 grey--text text--darken-1" v-if="text">{{ text }}</p>
     </div>
     <v-container v-else :key="2" :fluid="fluid" :class="{'pa-0': noPadding}">
