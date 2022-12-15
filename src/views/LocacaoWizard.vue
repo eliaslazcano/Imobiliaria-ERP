@@ -19,14 +19,16 @@
                   <v-card-title>Endereço</v-card-title>
                   <v-card-text>
                     <v-form @submit.prevent :disabled="iptImovelCepLoading">
-                      <v-text-field
-                        label="CEP"
-                        v-model="iptImovelCep"
-                        v-mask="'##.###-###'"
-                        type="tel"
-                        :loading="iptImovelCepLoading"
-                      ></v-text-field>
                       <v-row dense>
+                        <v-col cols="12">
+                          <v-text-field
+                            label="CEP"
+                            v-model="iptImovelCep"
+                            v-mask="'##.###-###'"
+                            type="tel"
+                            :loading="iptImovelCepLoading"
+                          ></v-text-field>
+                        </v-col>
                         <v-col cols="12" sm="2">
                           <v-text-field
                             label="UF"
@@ -40,16 +42,18 @@
                             v-model="iptImovelCidade"
                           ></v-text-field>
                         </v-col>
-                      </v-row>
-                      <v-text-field
-                        label="Bairro"
-                        v-model="iptImovelBairro"
-                      ></v-text-field>
-                      <v-text-field
-                        label="Logradouro"
-                        v-model="iptImovelLogradouro"
-                      ></v-text-field>
-                      <v-row dense>
+                        <v-col cols="12">
+                          <v-text-field
+                            label="Bairro"
+                            v-model="iptImovelBairro"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12">
+                          <v-text-field
+                            label="Logradouro"
+                            v-model="iptImovelLogradouro"
+                          ></v-text-field>
+                        </v-col>
                         <v-col cols="12" sm="6">
                           <v-text-field
                             label="Numero"
@@ -69,9 +73,9 @@
               </v-col>
               <v-col cols="12" lg="6">
                 <v-card outlined>
-                  <v-card-title>Encargos</v-card-title>
+                  <v-card-title>Outros</v-card-title>
                   <v-card-text>
-                    <v-row>
+                    <v-row dense>
                       <v-col cols="12" sm="6">
                         <v-text-field
                           label="Água"
@@ -84,23 +88,32 @@
                           v-model="iptImovelLuz"
                         ></v-text-field>
                       </v-col>
+                      <v-col cols="12">
+                        <v-text-field
+                          label="Condomínio"
+                          v-model="iptImovelCondominio"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-text-field
+                          label="IPTU"
+                          v-model="iptImovelIptu"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-text-field
+                          label="Seguro do Imóvel"
+                          v-model="iptImovelSeguro"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <text-field-monetary
+                          label="Valor do aluguel"
+                          prefix="R$"
+                          v-model="iptImovelAluguel"
+                        ></text-field-monetary>
+                      </v-col>
                     </v-row>
-                    <v-text-field
-                      label="Condomínio"
-                      v-model="iptImovelCondominio"
-                    ></v-text-field>
-                    <v-text-field
-                      label="IPTU"
-                      v-model="iptImovelIptu"
-                    ></v-text-field>
-                    <v-text-field
-                      label="Seguro do Imóvel"
-                      v-model="iptImovelSeguro"
-                    ></v-text-field>
-                    <v-text-field
-                      label="Valor do aluguel"
-                      v-model="iptImovelAluguel"
-                    ></v-text-field>
                   </v-card-text>
                 </v-card>
               </v-col>
@@ -828,7 +841,7 @@ export default {
   components: {TextFieldMonetary, AsyncContainer, DateField},
   data: () => ({
     loading: true,
-    step: 3,
+    step: 1,
     iptTmpEmail: '',
     iptTmpEmailRules: [
       v => !!v || 'Insira o e-mail',
@@ -941,15 +954,15 @@ export default {
       this.iptTmpTelefone = '';
       this.dialogAddProprietarioTelefone = false;
     },
+    concluirStepImovel() {
+      this.step = 2;
+    },
     concluirStepProprietario() {
       if (!this.$refs['form-proprietario'].validate()) {
         this.$store.commit('showSnackbar', {color: 'error', text: 'Preencha os campos obrigatórios que estão em vermelho'});
         return;
       }
       this.step = 3;
-    },
-    concluirStepImovel() {
-      this.step = 2;
     },
     async onSocioCepChange(socioIndice) {
       const i = this.iptLocatarioSocios[socioIndice];
@@ -964,6 +977,30 @@ export default {
           this.iptLocatarioSocios[socioIndice].logradouro = endereco.logradouro ? endereco.logradouro.toUpperCase() : '';
         }
       });
+    },
+    async enviarInformacoes() {
+      const dados = {
+        imovel: {
+          endereco: {
+            cep: this.iptImovelCep,
+            uf: this.iptImovelUf,
+            cidade: this.iptImovelCidade,
+            bairro: this.iptImovelBairro,
+            logradouro: this.iptImovelLogradouro,
+            numero: this.iptImovelNumero,
+            complemento: this.iptImovelComplemento
+          },
+          outros: {
+            agua: this.iptImovelAgua,
+            luz: this.iptImovelLuz,
+            condominio: this.iptImovelCondominio,
+            iptu: this.iptImovelIptu,
+            seguro: this.iptImovelSeguro,
+            aluguel: this.iptImovelAluguel
+          }
+        },
+      };
+      return dados;
     },
   },
   watch: {
