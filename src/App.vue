@@ -89,6 +89,14 @@
               <v-list-item-title>Locações</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
+          <v-list-item to="/cobrancas">
+            <v-list-item-icon>
+              <v-icon>mdi-currency-usd</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>Cobranças</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>

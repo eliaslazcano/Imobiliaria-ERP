@@ -44,6 +44,16 @@ const routes = [
     name: 'locacaowizard',
     component: () => import('../views/LocacaoWizard'),
   },
+  {
+    path: '/cobrancas',
+    name: 'cobrancas',
+    component: () => import('../views/CobrancasLista.vue'),
+  },
+  {
+    path: '/cobrancaslocatario',
+    name: 'cobrancaslocatario',
+    component: () => import('../views/CobrancasLocatario.vue'),
+  },
 ]
 
 const router = new VueRouter({

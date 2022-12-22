@@ -8,6 +8,8 @@
         <v-stepper-step step="2" :complete="step > 2" :color="step > 2 ? 'success' : 'primary'">Proprietário</v-stepper-step>
         <v-divider></v-divider>
         <v-stepper-step step="3" :complete="step > 3" :color="step > 3 ? 'success' : 'primary'">Locatário</v-stepper-step>
+        <v-divider></v-divider>
+        <v-stepper-step step="4" :complete="step > 4" :color="step > 4 ? 'success' : 'primary'">Contrato</v-stepper-step>
       </v-stepper-header>
       <v-stepper-items>
         <v-stepper-content step="1" class="pa-0">
@@ -106,13 +108,13 @@
                           v-model="iptImovelSeguro"
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12">
-                        <text-field-monetary
-                          label="Valor do aluguel"
-                          prefix="R$"
-                          v-model="iptImovelAluguel"
-                        ></text-field-monetary>
-                      </v-col>
+<!--                      <v-col cols="12">-->
+<!--                        <text-field-monetary-->
+<!--                          label="Valor do aluguel"-->
+<!--                          prefix="R$"-->
+<!--                          v-model="iptImovelAluguel"-->
+<!--                        ></text-field-monetary>-->
+<!--                      </v-col>-->
                     </v-row>
                   </v-card-text>
                 </v-card>
@@ -272,14 +274,16 @@
                   <v-card-title>Endereço Residencial</v-card-title>
                   <v-card-text>
                     <v-form @submit.prevent :disabled="iptProprietarioCepLoading">
-                      <v-text-field
-                        label="CEP"
-                        v-model="iptProprietarioCep"
-                        v-mask="'##.###-###'"
-                        type="tel"
-                        :loading="iptProprietarioCepLoading"
-                      ></v-text-field>
                       <v-row dense>
+                        <v-col cols="12">
+                          <v-text-field
+                            label="CEP"
+                            v-model="iptProprietarioCep"
+                            v-mask="'##.###-###'"
+                            type="tel"
+                            :loading="iptProprietarioCepLoading"
+                          ></v-text-field>
+                        </v-col>
                         <v-col cols="12" sm="2">
                           <v-text-field
                             label="UF"
@@ -293,16 +297,18 @@
                             v-model="iptProprietarioCidade"
                           ></v-text-field>
                         </v-col>
-                      </v-row>
-                      <v-text-field
-                        label="Bairro"
-                        v-model="iptProprietarioBairro"
-                      ></v-text-field>
-                      <v-text-field
-                        label="Logradouro"
-                        v-model="iptProprietarioLogradouro"
-                      ></v-text-field>
-                      <v-row dense>
+                        <v-col cols="12">
+                          <v-text-field
+                            label="Bairro"
+                            v-model="iptProprietarioBairro"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12">
+                          <v-text-field
+                            label="Logradouro"
+                            v-model="iptProprietarioLogradouro"
+                          ></v-text-field>
+                        </v-col>
                         <v-col cols="12" sm="6">
                           <v-text-field
                             label="Numero"
@@ -485,14 +491,16 @@
                       </v-row>
                       <p class="subtitle-2 mb-0">Endereço da empresa:</p>
                       <v-form @submit.prevent :disabled="iptProfissaoCepLoading">
-                        <v-text-field
-                          label="CEP"
-                          v-model="iptProfissaoCep"
-                          v-mask="'##.###-###'"
-                          type="tel"
-                          :loading="iptProfissaoCepLoading"
-                        ></v-text-field>
                         <v-row dense>
+                          <v-col cols="12">
+                            <v-text-field
+                              label="CEP"
+                              v-model="iptProfissaoCep"
+                              v-mask="'##.###-###'"
+                              type="tel"
+                              :loading="iptProfissaoCepLoading"
+                            ></v-text-field>
+                          </v-col>
                           <v-col cols="12" sm="2">
                             <v-text-field
                               label="UF"
@@ -645,7 +653,7 @@
                           </v-col>
                           <v-col cols="12" md="6">
                             <v-text-field
-                              label="Cargo/Função"
+                              label="Cargo/Função na empresa"
                               v-model="iptLocatarioSocios[index].cargo"
                             ></v-text-field>
                           </v-col>
@@ -738,7 +746,7 @@
                       color="success"
                       small
                       depressed
-                      @click="iptLocatarioSocios.push({}); $nextTick(() => $vuetify.goTo('#' + 'socio_' + (iptLocatarioSocios.length - 1)))">
+                      @click="iptLocatarioSocios.push({nome: '', datanascimento: '', pai: '', mae: '', naturalidadeuf: '', cep: '', uf: '', cidade: '', bairro: '', logradouro: ''}); $nextTick(() => $vuetify.goTo('#' + 'socio_' + (iptLocatarioSocios.length - 1)))">
                       <v-icon class="mr-1" small>mdi-plus</v-icon> Adicionar mais um sócio
                     </v-btn>
                   </div>
@@ -751,7 +759,46 @@
                 <v-icon small class="mr-1">mdi-arrow-left</v-icon> Retroceder
               </v-btn>
               <v-spacer></v-spacer>
-              <v-btn small color="primary">
+              <v-btn small color="primary" @click="concluirStepLocatario">
+                <v-icon small class="mr-1">mdi-arrow-right</v-icon> Prosseguir
+              </v-btn>
+            </v-card-actions>
+          </div>
+        </v-stepper-content>
+        <v-stepper-content step="4" class="pa-0">
+          <div class="pa-3">
+            <p class="title text-center mb-0">DADOS DO CONTRATO</p>
+            <v-card outlined>
+              <v-card-text>
+                <v-row dense>
+                  <v-col cols="12" md="6">
+                    <date-field
+                      label="Data de início do contrato"
+                      v-model="iptDataContratoInicio"
+                    ></date-field>
+                  </v-col>
+                  <v-col cols="12" md="6">
+                    <date-field
+                      label="Data de início do contrato"
+                      v-model="iptDataContratoPrazo"
+                    ></date-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <text-field-monetary
+                      label="Valor do aluguel"
+                      prefix="R$"
+                      v-model="iptImovelAluguel"
+                    ></text-field-monetary>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </v-card>
+            <v-card-actions class="pa-0 mt-3">
+              <v-btn small color="primary" @click="step = step - 1">
+                <v-icon small class="mr-1">mdi-arrow-left</v-icon> Retroceder
+              </v-btn>
+              <v-spacer></v-spacer>
+              <v-btn small color="primary" @click="enviarInformacoes">
                 <v-icon small class="mr-1">mdi-check</v-icon> Concluir
               </v-btn>
             </v-card-actions>
@@ -826,6 +873,7 @@
         </v-form>
       </v-card>
     </v-dialog>
+    <loading-dialog v-model="loadingDialog"></loading-dialog>
   </async-container>
 </template>
 
@@ -836,11 +884,14 @@ import AppWebClient from '@/http/AppWebClient';
 import StringHelper from '@/helper/StringHelper';
 import CepWebClient from '@/http/CepWebClient';
 import TextFieldMonetary from '@/components/TextFieldMonetary.vue';
+import LoadingDialog from '@/components/LoadingDialog.vue';
+import http from '@/plugins/axios';
 export default {
   name: 'LocacaoWizard',
-  components: {TextFieldMonetary, AsyncContainer, DateField},
+  components: {LoadingDialog, TextFieldMonetary, AsyncContainer, DateField},
   data: () => ({
     loading: true,
+    loadingDialog: false,
     step: 1,
     iptTmpEmail: '',
     iptTmpEmailRules: [
@@ -864,7 +915,7 @@ export default {
     iptProprietarioRg: '',
     iptProprietarioDataNascimento: '',
     iptProprietarioProfissao: '',
-    iptProprietarioEstadoCivil: null,
+    iptProprietarioEstadoCivil: 1,
     iptProprietarioEstadoCivilItems: [],
 
     iptProprietarioEmails: [],
@@ -904,6 +955,8 @@ export default {
     iptImovelIptu: '',
     iptImovelSeguro: '',
     iptImovelAluguel: '',
+    iptDataContratoInicio: '',
+    iptDataContratoPrazo: '',
 
     //Locatario
     iptLocatarioTipo: null, //1:PF, 2:PJ
@@ -912,11 +965,11 @@ export default {
     iptLocatarioNome: '',
     iptLocatarioRg: '',
     iptLocatarioDataNascimento: '',
-    iptLocatarioEstadoCivil: null,
+    iptLocatarioEstadoCivil: 1,
     iptLocatarioProfissao: '',
     iptLocatarioRenda: 0,
     iptLocatarioSocios: [
-      {nome: '', datanascimento: '', pai: '', mae: '', naturalidadeuf: '', uf: '', cidade: '', bairro: '', logradouro: ''}
+      {nome: '', datanascimento: '', pai: '', mae: '', naturalidadeuf: '', nacionalidade: '', cep: '', uf: '', cidade: '', bairro: '', logradouro: '', numero: '', complemento: ''}
     ],
 
     iptProfissaoEmpresa: '',
@@ -929,7 +982,6 @@ export default {
     iptProfissaoLogradouro: '',
     iptProfissaoNumero: '',
     iptProfissaoComplemento: '',
-
   }),
   async created() {
     try {
@@ -963,6 +1015,9 @@ export default {
         return;
       }
       this.step = 3;
+    },
+    concluirStepLocatario() {
+      this.step = this.step + 1;
     },
     async onSocioCepChange(socioIndice) {
       const i = this.iptLocatarioSocios[socioIndice];
@@ -999,7 +1054,71 @@ export default {
             aluguel: this.iptImovelAluguel
           }
         },
+        proprietario: {
+          cpf: StringHelper.extractNumbers(this.iptProprietarioCpf),
+          nome: this.iptProprietarioNome.toUpperCase().trim(),
+          rg: this.iptProprietarioRg.trim(),
+          nascimento: this.iptProprietarioDataNascimento,
+          civil: this.iptProprietarioEstadoCivil,
+          profissao: this.iptProprietarioProfissao,
+          emails: this.iptProprietarioEmails,
+          telefones: this.iptProprietarioTelefones,
+          endereco: {
+            cep: this.iptProprietarioCep,
+            uf: this.iptProprietarioUf,
+            cidade: this.iptProprietarioCidade,
+            bairro: this.iptProprietarioBairro,
+            logradouro: this.iptProprietarioLogradouro,
+            numero: this.iptProprietarioNumero,
+            complemento: this.iptProprietarioComplemento
+          },
+          deposito: {
+            banco: this.iptDepositoBanco,
+            agencia: this.iptDepositoAgencia,
+            conta: this.iptDepositoConta,
+            tipo: this.iptDepositoTipo,
+            iptu: this.iptPagarIptu
+          },
+        },
+        locatario: {
+          tipo: this.iptLocatarioTipo,
+          cpf: StringHelper.extractNumbers(this.iptLocatarioCpf),
+          nome: this.iptLocatarioNome, //nome fantasia se for PJ
+          rg: this.iptLocatarioRg,
+          nascimento: this.iptLocatarioDataNascimento,
+          civil: this.iptLocatarioEstadoCivil,
+          renda: this.iptLocatarioRenda,
+          profissao: {
+            titulo: this.iptLocatarioProfissao,
+            empresa: this.iptProfissaoEmpresa,
+            admissao: this.iptProfissaoAdmissao,
+            endereco: {
+              cep: this.iptProfissaoCep,
+              uf: this.iptProfissaoUf,
+              cidade: this.iptProfissaoCidade,
+              bairro: this.iptProfissaoBairro,
+              logradouro: this.iptProfissaoLogradouro,
+              numero: this.iptProfissaoNumero,
+              complemento: this.iptProfissaoComplemento,
+            }
+          },
+          //Se for pj:
+          cnpj: StringHelper.extractNumbers(this.iptLocatarioCpf),
+          razaosocial: this.iptLocatarioRazaoSocial,
+          socios: this.iptLocatarioSocios.filter(i => i.nome)
+        },
+        contrato: {
+          datainicio: this.iptDataContratoInicio,
+          dataprazo: this.iptDataContratoPrazo
+        },
       };
+      try {
+        this.loadingDialog = true;
+        await http().post('locacao/inserir', dados);
+        await this.$router.push('/locacoes');
+      } finally {
+        this.loadingDialog = false;
+      }
       return dados;
     },
   },
